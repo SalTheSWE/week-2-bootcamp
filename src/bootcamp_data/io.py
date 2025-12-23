@@ -1,22 +1,21 @@
 from pathlib import Path
-import pandas as pd
+import pandas as pd 
+NA = ["", "NA", "N/A", "null", "None" ] 
 def read_orders_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path,
                         sep=",",
                         decimal=".",
                         dtype={"order_id": "string",
                                 "user_id": "string",
-                                "created_at": "string",
-                                "amount": "float64",
-                                "quantity":"int64",
-                                "status": "boolean"},
-                                na_values=["","NA","null"])
+                                },
+                                na_values=NA,keep_default_na=True)
 def read_users_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path,
                         sep=",",
                         decimal=".",
                         dtype={ "user_id": "string",
-                                "country": "string",
-                                "signup_date": "float64",},
-                        na_values=["","NA","null"])
-def write_parquet(df, path)
+                                },
+                        na_values=NA,keep_default_na=True)
+def write_parquet(df: pd.DataFrame, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_parquet(path, index = False)
