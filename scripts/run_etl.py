@@ -1,14 +1,14 @@
 import pandas as pd
 from pathlib import Path
 import sys
-from bootcamp_data.etl import ETLConfig, run_etl
+
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
-
+from bootcamp_data.etl import ETLConfig, run_etl
 
 cfg = ETLConfig( root=ROOT, 
                 raw_orders=ROOT / "data" / "raw" / "orders.csv", 

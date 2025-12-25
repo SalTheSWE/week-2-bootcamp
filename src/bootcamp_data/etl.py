@@ -1,5 +1,5 @@
 from pathlib import Path
-from __future__ import annotations
+
 from dataclasses import dataclass
 import pandas as pd
 
@@ -8,6 +8,11 @@ from bootcamp_data.transforms import winsorize, add_time_parts, parse_datetime, 
 from bootcamp_data.config import make_paths
 from bootcamp_data.quality import assert_unique_key, require_columns, assert_non_empty, assert_in_range
 from bootcamp_data.joins import safe_left_join
+import json 
+from dataclasses import asdict 
+
+
+
 
 @dataclass(frozen=True) 
 class ETLConfig: 
@@ -22,6 +27,9 @@ class ETLConfig:
 
 def run_etl(cfg: ETLConfig) -> None: 
     orders_raw, users = load_inputs(cfg)
+    analytics = transform(orders_raw, users)
+    load_outputs(analytics, users, cfg)
+    write_run_meta(cfg, analytics=analytics)
 
 def load_inputs(cfg: ETLConfig) -> tuple[pd.DataFrame, pd.DataFrame]:
     orders = read_orders_csv(cfg.raw_orders)
@@ -52,4 +60,18 @@ def load_outputs(analytics: pd.DataFrame, users: pd.DataFrame, cfg: ETLConfig) -
     write_parquet(analytics, cfg.out_analytics)
 
 
+
+
+def write_run_meta(cfg: ETLConfig, *, analytics: pd.DataFrame) -> None: 
+    missing_created_at = int(analytics["created_at"].isna().sum())
+    country_match_rate = 1.0 - float(analytics["country"].isna().mean())
+    meta = {
+        "rows_out": int(len(analytics)),
+        "missing_created_at": missing_created_at,
+        "country_match_rate": country_match_rate,
+        "config": {k: str(v) for k, v in asdict(cfg).items()},
+    }
+
+    cfg.run_meta.parent.mkdir(parents=True, exist_ok=True)
+    cfg.run_meta.write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
