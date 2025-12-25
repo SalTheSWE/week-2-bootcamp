@@ -13,4 +13,4 @@ uv run .\scripts\run_etl.py
 - reports/figures/*.png
 
 ## EDA
-Open notebooks/eda.ipynb and run all cells.
+Open notebooks/eda.ipynb and run all cells, make sure u choose the venv kernel that u created above
