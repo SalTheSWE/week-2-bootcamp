@@ -28,12 +28,12 @@ assert_unique_key(users, "user_id")
 #parsing time
 orders = parse_datetime(orders,"created_at")
 #add time parts(columns)
-orders = add_time_parts(orders,["created_at_timeparsed"])
+orders = add_time_parts(orders,"created_at_timeparsed")
 #join orders with users
 joined_orders = safe_left_join(orders, users, "user_id", validate="many_to_one")
 assert len(orders) == len(joined_orders), "rows dont match after join"
 #amount winsor
-amount_winsor = winsorize(joined_orders["amount"], 0.01, 0.99)
+joined_orders["amount_winsor"]= winsorize(joined_orders["amount"], 0.01, 0.99)
 
 
 write_parquet(joined_orders,paths.processed/"analytics_table.parquet")

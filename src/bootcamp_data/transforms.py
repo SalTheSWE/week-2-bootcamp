@@ -39,7 +39,7 @@ def add_time_parts(df: pd.DataFrame, ts_col: str) -> pd.DataFrame:
     df = df.copy()
     df["date"] = time_series.dt.date
     df["year"] = time_series.dt.year
-    df["month"] = time_series.dt.to_period("M")
+    df["month"] = time_series.dt.to_period("M").astype(str)
     df["day"] = time_series.dt.day_name()
     df["hour"] = time_series.dt.hour
     return df

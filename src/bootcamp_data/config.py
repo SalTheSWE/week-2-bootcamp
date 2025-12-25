@@ -9,6 +9,7 @@ class Paths:
     raw: Path
     root: Path
     reports: Path
+    
 def make_paths(root: Path)-> Paths:
     data = root/ "data"
     return Paths(cache = data/"cache",
