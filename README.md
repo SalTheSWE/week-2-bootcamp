@@ -1,10 +1,11 @@
 ## Setup
-python -m venv .venv
+uv venv -p 3.11
+
 # activate venv
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 
 ## Run ETL
-python scripts/run_etl.py
+uv run .\scripts\run_etl.py    
 
 ## Outputs
 - data/processed/analytics_table.parquet
